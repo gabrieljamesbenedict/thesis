@@ -1,0 +1,4 @@
+/src/datasets
+/src/runs
+/src/video
+*.pt
