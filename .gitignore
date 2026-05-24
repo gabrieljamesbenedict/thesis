@@ -3,5 +3,6 @@
 /src/video
 /src/logs
 /src/models
+/src/raws
 *.pt
 *.mp4
