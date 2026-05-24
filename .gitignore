@@ -2,5 +2,6 @@
 /src/runs
 /src/video
 /src/logs
+/src/models
 *.pt
 *.mp4
