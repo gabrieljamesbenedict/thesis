@@ -1,5 +1,6 @@
 /src/datasets
 /src/runs
 /src/video
+/src/logs
 *.pt
 *.mp4
