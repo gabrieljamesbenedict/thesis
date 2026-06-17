@@ -12,10 +12,10 @@ match_thresh: 0.8 # (float) Association similarity threshold (IoU/cost); tune wi
 fuse_score: True # (bool) Fuse detection score with motion/IoU for matching; stabilizes weak detections
 
 # BoT-SORT specifics
-gmc_method: sparseOptFlow # (str) Global motion compensation: sparseOptFlow|orb|sift|ecc|none; helps moving camera scenes
+gmc_method: None #sparseOptFlow # (str) Global motion compensation: sparseOptFlow|orb|sift|ecc|none; helps moving camera scenes
 
 # ReID model related thresh
 proximity_thresh: 0.5 # (float) Min IoU to consider tracks proximate for ReID; higher is stricter
 appearance_thresh: 0.8 # (float) Min appearance similarity for ReID; raise to avoid identity swaps
-with_reid: False # (bool) Enable ReID model use; needs extra model and compute
+with_reid: True # False # (bool) Enable ReID model use; needs extra model and compute
 model: auto # (str) ReID model name/path; "auto" uses detector features if available
