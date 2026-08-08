@@ -4,5 +4,6 @@
 /src/logs
 /src/models
 /src/raws
+/src/temp
 *.pt
 *.mp4
