@@ -1,2 +1,1 @@
-vid17  Precision: 1.000 | Recall: 1.000 | F1: 1.000
-vid18  Precision: 1.000 | Recall: 1.000 | F1: 1.000
+vid02  Precision: 1.000 | Recall: 1.000 | F1: 1.000
