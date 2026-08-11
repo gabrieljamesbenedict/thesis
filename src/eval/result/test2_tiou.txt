@@ -1,0 +1,4 @@
+  Human ID  Object ID         Frames Truth     Frames Predicted         TIOU
+         1          2              0 -> 20              0 -> 20      1.00000
+         3          4             0 -> 100             0 -> 100      1.00000
+         5          6              0 -> 50             10 -> 60      0.67213
