@@ -1,5 +1,2 @@
-frame_start,frame_end,human_id,object_id
-15,95,1,2
-60,110,2,3
-20,60,3,4
-30,10,4,5
+frame_start,frame_end,human_id,object_id,distance
+1,100,3,4
