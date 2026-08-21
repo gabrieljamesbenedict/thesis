@@ -1,1 +1,0 @@
-  Human ID  Object ID    Frames Truth     Frames Pred         TIOU   Distance
