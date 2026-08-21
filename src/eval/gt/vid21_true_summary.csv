@@ -14,7 +14,6 @@ frame_start,frame_end,human_id,object_id,distance
 2436,2511,151,152,far
 1452,1464,57,59,near
 1476,1548,57,59,near
-1630,1548,57,82,far
 1676,1704,57,89,far
 1704,1715,57,91,far
 1735,1801,57,98,far

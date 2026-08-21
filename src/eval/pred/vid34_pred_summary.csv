@@ -5,8 +5,3 @@ frame_start,frame_end,human_id,object_id
 445,445,13,16
 880,915,23,7
 980,985,4,25
-
-frame_start,frame_end,human_id,object_id
-0,1795,2,2
-640,655,4,17
-985,985,4,23
