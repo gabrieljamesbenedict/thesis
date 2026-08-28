@@ -1,10 +1,10 @@
 /src/datasets
+/src/eval
+/src/models
+/src/raws
 /src/runs
 /src/video
 /src/logs
-/src/models
-/src/raws
-/src/temp
 *.pt
 *.mp4
 .venv
