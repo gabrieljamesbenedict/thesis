@@ -8,3 +8,4 @@
 *.pt
 *.mp4
 .venv
+/runs
