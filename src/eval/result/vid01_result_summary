@@ -1,0 +1,10 @@
+   human_id  object_id truth_frames    pred_frames  intersection  union      tiou
+0         1          4      0 - 105      [0 - 100]           101    106  0.952830
+1         1          4   280 - 3921   [280 - 3920]          3641   3642  0.999725
+2         3          6   140 - 1340   [150 - 1335]          1186   1201  0.987510
+3         3         12  2445 - 2905  [2445 - 2900]           456    461  0.989154
+Total Predictions: 8
+Mean TIOU: 0.982305008819526
+Precision: 0.5
+Recall: 1.0
+F1: 0.6666666666666666
