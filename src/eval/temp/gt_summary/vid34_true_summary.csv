@@ -1,0 +1,10 @@
+frame_start,frame_end,human_id,object_id,distance
+0,1799,2,2,near
+147,970,4,7,far
+980,1040,4,25,far
+980,1040,4,25,far
+447,842,13,16,far
+843,934,21,16,far
+935,1221,21,16,far
+1222,1424,28,16,far
+1425,1799,22,16,far
