@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
-import hoid_engine  # noqa: E402
+import concept.hoid_engine as hoid_engine  # noqa: E402
 
 try:
     from PIL import Image, ImageTk
@@ -70,6 +70,16 @@ class HoidApp:
         self.process_btn.pack(fill=tk.X, pady=2)
         self.stop_btn = ttk.Button(left, text="Stop", command=self.stop_process, state=tk.DISABLED)
         self.stop_btn.pack(fill=tk.X, pady=2)
+
+        ttk.Label(left, text="3. Object classes", font=("Segoe UI", 10, "bold")).pack(anchor=tk.W, pady=(8, 0))
+        self.class_vars = {}
+        class_frame = ttk.Frame(left)
+        class_frame.pack(fill=tk.X, pady=2)
+        for _i, _cname in enumerate(hoid_engine.detect_target_names):
+            _var = tk.BooleanVar(value=True)
+            self.class_vars[_cname] = _var
+            ttk.Checkbutton(class_frame, text=_cname, variable=_var).grid(
+                row=_i // 3, column=_i % 3, sticky=tk.W)
 
         self.preview_check = ttk.Checkbutton(
             left, text="Live preview (off = max speed)",
@@ -189,11 +199,18 @@ class HoidApp:
         if self.preview_var.get():
             self.preview_label.configure(text="Loading...")
         self._set_status(f"Processing {self.selected_path.name} ...")
+        active = [n for n, v in self.class_vars.items() if v.get()]
+        if not active:
+            self._set_status("Select at least one object class.")
+            self.processing = False
+            self.process_btn.configure(state=tk.NORMAL)
+            self.stop_btn.configure(state=tk.DISABLED)
+            return
         self.worker = threading.Thread(
             target=hoid_engine.process_video,
             kwargs={"video_path": self.selected_path, "q": self.msg_q,
                     "stop_event": self.stop_event, "is_preview_on": self.preview_event,
-                    "preview_box": self.disp_wh},
+                    "preview_box": self.disp_wh, "active_classes": active},
             daemon=True,
         )
         self.worker.start()
