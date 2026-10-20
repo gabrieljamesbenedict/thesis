@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" scale="1" border="0">
   <diagram name="Page-1" id="tPMUGmKtdeh0q6VbNx4x">
-    <mxGraphModel dx="2361" dy="933" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2681" dy="1056" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -43,7 +43,7 @@
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-66" parent="Voog2cKHiejXABYldX-4-5" style="rounded=1;whiteSpace=wrap;html=1;" value="Precision&lt;div&gt;Recall&lt;/div&gt;&lt;div&gt;F1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="230.43478260869566" y="160" as="geometry" />
         </mxCell>
-        <mxCell id="XuJx6CXe3UdbZzlOF3R0-67" parent="Voog2cKHiejXABYldX-4-5" style="rounded=1;whiteSpace=wrap;html=1;" value="Precision&lt;div&gt;Recall&lt;/div&gt;&lt;div&gt;F1&lt;/div&gt;&lt;div&gt;Mean TIoU&lt;/div&gt;" vertex="1">
+        <mxCell id="XuJx6CXe3UdbZzlOF3R0-67" parent="Voog2cKHiejXABYldX-4-5" style="rounded=1;whiteSpace=wrap;html=1;" value="Precision&lt;div&gt;Recall&lt;/div&gt;&lt;div&gt;F1&lt;/div&gt;" vertex="1">
           <mxGeometry height="70" width="230.43478260869566" x="299.5652173913043" y="160" as="geometry" />
         </mxCell>
         <mxCell id="Voog2cKHiejXABYldX-4-13" connectable="0" parent="1" style="group" value="" vertex="1">

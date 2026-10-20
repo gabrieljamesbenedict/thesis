@@ -1,0 +1,119 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Page-1" id="voangPjJSyhRC_QfilcB">
+    <mxGraphModel dx="890" dy="507" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="XcxedHV15Ivq9bBy864M-3" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-2" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-1" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fillColor=#fad7ac;strokeColor=#b46504;" value="Start" vertex="1">
+          <mxGeometry height="80" width="120" x="140" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-5" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-4" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-2" parent="1" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;shapeInside=1;fixedSize=1;fillColor=#fad9d5;strokeColor=#ae4132;" value="Person-Object&lt;br&gt;Interaction Event" vertex="1">
+          <mxGeometry height="60" width="140" x="315" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-7" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-6" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-26" connectable="0" parent="XcxedHV15Ivq9bBy864M-7" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="No" vertex="1">
+          <mxGeometry relative="1" x="-0.2136" y="-2" as="geometry">
+            <mxPoint x="-6" y="-2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-13" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-12" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-25" connectable="0" parent="XcxedHV15Ivq9bBy864M-13" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="Yes" vertex="1">
+          <mxGeometry relative="1" x="-0.4327" y="-1" as="geometry">
+            <mxPoint x="-1" y="4" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-4" parent="1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;fillColor=#b1ddf0;strokeColor=#10739e;" value="Is actively&lt;br&gt;tracked?" vertex="1">
+          <mxGeometry height="80" width="140" x="510" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-9" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-8" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-28" connectable="0" parent="XcxedHV15Ivq9bBy864M-9" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="Yes" vertex="1">
+          <mxGeometry relative="1" x="-0.5673" y="-2" as="geometry">
+            <mxPoint x="2" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-15" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-27" connectable="0" parent="XcxedHV15Ivq9bBy864M-15" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="No" vertex="1">
+          <mxGeometry relative="1" x="-0.2424" y="-3" as="geometry">
+            <mxPoint x="-13" y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-6" parent="1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;fillColor=#b1ddf0;strokeColor=#10739e;" value="Has recorded prior&lt;br&gt;holder?" vertex="1">
+          <mxGeometry height="80" width="140" x="706" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-11" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-10" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-31" connectable="0" parent="XcxedHV15Ivq9bBy864M-11" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="No" vertex="1">
+          <mxGeometry relative="1" x="-0.6909" y="-3" as="geometry">
+            <mxPoint y="-3" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QqNRDxN3cEFVrrUBob-y-2" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QqNRDxN3cEFVrrUBob-y-3" connectable="0" parent="QqNRDxN3cEFVrrUBob-y-2" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="Yes" vertex="1">
+          <mxGeometry relative="1" x="-0.8409" y="-1" as="geometry">
+            <mxPoint x="1" as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-8" parent="1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;fillColor=#b1ddf0;strokeColor=#10739e;" value="Wrist inside of phone bounding box?" vertex="1">
+          <mxGeometry height="80" width="140" x="706" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-22" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-33" connectable="0" parent="XcxedHV15Ivq9bBy864M-22" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="Yes" vertex="1">
+          <mxGeometry relative="1" x="-0.7061" y="-1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-23" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-10" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-32" connectable="0" parent="XcxedHV15Ivq9bBy864M-23" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];defaultLabelBackgroundColor=gap;" value="No" vertex="1">
+          <mxGeometry relative="1" x="-0.5606" y="2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-10" parent="1" style="rhombus;whiteSpace=wrap;html=1;shapeInside=1;fillColor=#b1ddf0;strokeColor=#10739e;" value="Within 75 pixels?" vertex="1">
+          <mxGeometry height="80" width="140" x="902" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-19" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-12" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="Update current active tracking&amp;nbsp;" vertex="1">
+          <mxGeometry height="60" width="140" x="510" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-17" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-16" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-14" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="New active tracking" vertex="1">
+          <mxGeometry height="60" width="140" x="902" y="240" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-16" parent="1" style="ellipse;whiteSpace=wrap;html=1;shapeInside=1;fillColor=#fad7ac;strokeColor=#b46504;" value="End" vertex="1">
+          <mxGeometry height="80" width="130" x="1098" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-24" edge="1" parent="1" source="XcxedHV15Ivq9bBy864M-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=1;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XcxedHV15Ivq9bBy864M-16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="XcxedHV15Ivq9bBy864M-21" parent="1" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" value="New active tracking" vertex="1">
+          <mxGeometry height="60" width="140" x="902" y="460" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
