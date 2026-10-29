@@ -1,11 +1,11 @@
 <mxfile host="app.diagrams.net" scale="1" border="0">
   <diagram name="Page-1" id="tPMUGmKtdeh0q6VbNx4x">
-    <mxGraphModel dx="2681" dy="1056" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1569" dy="448" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="Voog2cKHiejXABYldX-4-10" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;strokeColor=#C73500;strokeWidth=3;" value="" vertex="1">
-          <mxGeometry height="840" width="570" x="-210" y="160" as="geometry" />
+          <mxGeometry height="760" width="570" x="-210" y="150" as="geometry" />
         </mxCell>
         <mxCell id="Voog2cKHiejXABYldX-4-14" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;fontColor=#000000;strokeColor=#C73500;strokeWidth=3;" value="" vertex="1">
           <mxGeometry height="640" width="570" x="520" y="160" as="geometry" />
@@ -127,7 +127,7 @@
           <mxGeometry height="30" width="170" x="520" y="850" as="geometry" />
         </mxCell>
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-46" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Model Validation" vertex="1">
-          <mxGeometry height="60" width="212.3076923076923" x="-31.15384615384616" y="920" as="geometry" />
+          <mxGeometry height="60" width="212.3076923076923" x="-31.15384615384616" y="840" as="geometry" />
         </mxCell>
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Needs Analysis" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="-31.15384615384616" y="180" as="geometry" />
@@ -141,10 +141,10 @@
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Pose Estimation Model Training" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="92.69230769230768" y="360" as="geometry" />
         </mxCell>
-        <mxCell id="XuJx6CXe3UdbZzlOF3R0-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Dataset Split&lt;div&gt;70/20/10&lt;/div&gt;&lt;div&gt;(Train, Val, Test)&lt;/div&gt;" vertex="1">
+        <mxCell id="XuJx6CXe3UdbZzlOF3R0-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Dataset Split&lt;div&gt;80/10/10&lt;/div&gt;&lt;div&gt;(Train, Val, Test)&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="-155" y="520" as="geometry" />
         </mxCell>
-        <mxCell id="XuJx6CXe3UdbZzlOF3R0-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Dataset Split&lt;div&gt;80/20&lt;/div&gt;&lt;div&gt;(Train, Val)&lt;/div&gt;" vertex="1">
+        <mxCell id="XuJx6CXe3UdbZzlOF3R0-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Dataset Split&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;80/10/10&lt;/span&gt;&lt;/div&gt;&lt;div&gt;&lt;span style=&quot;background-color: transparent; color: light-dark(#000000, var(--ge-light-color, #ffffff));&quot;&gt;(Train, Val)&lt;/span&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="92.69230769230768" y="520" as="geometry" />
         </mxCell>
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Annotate the detect model classes using LabelImg" vertex="1">
@@ -162,13 +162,8 @@
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Import YOLOv11-X&lt;div&gt;pose estimation model&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="92.69230769230768" y="610" as="geometry" />
         </mxCell>
-        <mxCell id="Voog2cKHiejXABYldX-4-30" edge="1" parent="1" source="XuJx6CXe3UdbZzlOF3R0-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XuJx6CXe3UdbZzlOF3R0-46">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="198.9" y="880" />
-              <mxPoint x="75" y="880" />
-            </Array>
-          </mxGeometry>
+        <mxCell id="nrEQt4FuQ-SRaeEbGeBk-2" edge="1" parent="1" source="XuJx6CXe3UdbZzlOF3R0-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XuJx6CXe3UdbZzlOF3R0-46">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Training for 30 epochs" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="92.69230769230768" y="690" as="geometry" />
@@ -203,22 +198,11 @@
         <mxCell id="XuJx6CXe3UdbZzlOF3R0-24" edge="1" parent="1" source="XuJx6CXe3UdbZzlOF3R0-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" target="XuJx6CXe3UdbZzlOF3R0-20">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="Voog2cKHiejXABYldX-4-27" edge="1" parent="1" source="Voog2cKHiejXABYldX-4-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="Voog2cKHiejXABYldX-4-25">
+        <mxCell id="nrEQt4FuQ-SRaeEbGeBk-1" edge="1" parent="1" source="Voog2cKHiejXABYldX-4-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XuJx6CXe3UdbZzlOF3R0-46">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="Voog2cKHiejXABYldX-4-24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;div&gt;Stage 1: Train Head&lt;/div&gt;&lt;div&gt;(Backbone Frozen, 10 Epochs)&lt;/div&gt;" vertex="1">
+        <mxCell id="Voog2cKHiejXABYldX-4-24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="&lt;div&gt;Train for 100 epochs&lt;/div&gt;" vertex="1">
           <mxGeometry height="60" width="212.3076923076923" x="-155" y="690" as="geometry" />
-        </mxCell>
-        <mxCell id="Voog2cKHiejXABYldX-4-29" edge="1" parent="1" source="Voog2cKHiejXABYldX-4-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;defaultLabelBackgroundColor=gap;" target="XuJx6CXe3UdbZzlOF3R0-46">
-          <mxGeometry relative="1" as="geometry">
-            <Array as="points">
-              <mxPoint x="-48.8" y="880" />
-              <mxPoint x="75" y="880" />
-            </Array>
-          </mxGeometry>
-        </mxCell>
-        <mxCell id="Voog2cKHiejXABYldX-4-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;" value="Stage 2: Full Fine-Tune&lt;div&gt;(Unfrozen, 100 Epochs&lt;/div&gt;" vertex="1">
-          <mxGeometry height="60" width="212.3076923076923" x="-155" y="775" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
