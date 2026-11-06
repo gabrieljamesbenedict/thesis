@@ -37,8 +37,8 @@ phone_botsort = "trackers/detect_botsort.yaml"
 person_botsort = "trackers/person_botsort.yaml"
 
 # Detect target classes (subset of best.pt names; aliases map model->target)
-detect_target_names = ["phone", "laptop", "wallet", "bottle", "bag", "cup"]
-detect_aliases = {"cell phone": "phone"}
+detect_target_names = ["phone", "laptop", "wallet", "tumbler", "bag"]
+detect_aliases = {"cell phone": "phone", "tumbler": "bottle"}
 
 video_input_directory = BASE_DIR / "video" / "input"
 video_output_directory = BASE_DIR / "video" / "output"
@@ -48,16 +48,15 @@ logs_summary_directory = BASE_DIR / "video" / "logs" / "logs_summary"
 # Systems configuration (Cell 7)
 detect_conf_thres = 0.2
 # Per-class output thresholds (applied post-track; track() runs at the min).
-# Calibrated on Scenario1-7 spotchecks (146 frames): laptop/cup strong,
-# wallet/bottle weak tails, phone ~zero recall at 640px (kept low to catch
+# Calibrated on Scenario1-7 spotchecks (146 frames): laptop strong,
+# wallet/tumbler weak tails, phone ~zero recall at 640px (kept low to catch
 # rare hits like the cafe 0.55 without adding scenario noise: 0 hits @0.03).
 detect_conf_by_class = {
     "phone": 0.05,
     "laptop": 0.30,
     "wallet": 0.15,
-    "bottle": 0.20,
+    "tumbler": 0.20,
     "bag": 0.20,
-    "cup": 0.30,
 }
 pose_conf_thres = 0.3
 video_stride = 5
@@ -99,9 +98,8 @@ class_colors = {
     "phone": (0, 255, 255),
     "laptop": (255, 0, 0),
     "wallet": (255, 0, 255),
-    "bottle": (0, 165, 255),
+    "tumbler": (0, 165, 255),
     "bag": (255, 255, 0),
-    "cup": (180, 0, 180),
 }
 
 pad_w = 15
