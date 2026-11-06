@@ -1,0 +1,10 @@
+frame_start,frame_end,human_id,object_class,object_id
+0,925,1,bottle,9
+0,925,2,laptop,6
+0,325,2,cup,14
+480,530,2,cup,14
+0,585,3,laptop,3
+675,710,3,laptop,3
+790,925,3,laptop,3
+0,925,3,bag,4
+540,570,2,bag,1

@@ -31,9 +31,9 @@ from transformers import AutoModelForDepthEstimation
 # ---------------------------------------------------------------------------
 BASE_DIR = Path(__file__).resolve().parent
 
-detect_model_name = "models/detect/best.pt"
+detect_model_name = "models/detect/1027best.pt"
 pose_model_name = "models/pose/yolo11x-pose-trained.pt"
-phone_botsort = "trackers/phone_botsort.yaml"
+phone_botsort = "trackers/detect_botsort.yaml"
 person_botsort = "trackers/person_botsort.yaml"
 
 # Detect target classes (subset of best.pt names; aliases map model->target)

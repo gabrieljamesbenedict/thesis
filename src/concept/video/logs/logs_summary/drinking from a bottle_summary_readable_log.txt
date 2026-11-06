@@ -1,0 +1,15 @@
+Human 1 and bottle 9
+    Frame     0 to Frame   925
+Human 2 and laptop 6
+    Frame     0 to Frame   925
+Human 2 and cup 14
+    Frame     0 to Frame   325
+    Frame   480 to Frame   530
+Human 3 and laptop 3
+    Frame     0 to Frame   585
+    Frame   675 to Frame   710
+    Frame   790 to Frame   925
+Human 3 and bag 4
+    Frame     0 to Frame   925
+Human 2 and bag 1
+    Frame   540 to Frame   570

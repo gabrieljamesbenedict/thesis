@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent
 if str(BASE_DIR) not in sys.path:
     sys.path.insert(0, str(BASE_DIR))
 
-import concept.hoid_engine as hoid_engine  # noqa: E402
+import hoid_engine as hoid_engine  # noqa: E402
 
 try:
     from PIL import Image, ImageTk
