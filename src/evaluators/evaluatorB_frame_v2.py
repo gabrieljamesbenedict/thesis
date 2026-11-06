@@ -1,10 +1,14 @@
 """EvaluatorB_frame_v2: frame-level binary interaction scorer.
 
 Frame-level scorer: each stride-grid frame is labeled INTERACTING if any
-verified interaction interval covers it, else NOT INTERACTING.
+interaction interval covers it, else NOT INTERACTING.
 Confusion matrix (TP/FP/FN/TN) -> Precision, Recall, F1.
 
 Additional: 5-tuple frame scoring (exact frame/human/object/class match).
+
+Unmapped prediction tracker IDs are never dropped: binary/per-class count
+their activity like any pred (overlap with GT activity credits TP, else FP);
+5-tuple counts them as FP (identity required, sentinel labels never match).
 
 Outputs:
     primary_frames.csv              - per-video binary P/R/F1 (unchanged schema)
@@ -30,20 +34,31 @@ import argparse
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-import numpy as np
 import pandas as pd
 
 from evaluators.id_map import apply_id_map, load_id_map, validate_id_map
+from evaluators.gt_io import normalize_gt_columns, read_gt
 
-CLASS_NAMES = ["cell phone", "laptop", "wallet", "bottle", "bag", "cup"]
+CLASS_NAMES = ["cell phone", "laptop", "wallet", "tumbler", "bag"]
 DEFAULT_STRIDE = 5
 
 
-def _vidnum(name: str) -> int | None:
+def _pair_key(name: str) -> str | None:
+    """Pairing key from a GT/prediction filename.
+
+    vidNN_* -> 'vidNN'; otherwise the name with a known suffix stripped
+    (e.g., 'DrinkBottle_gt.csv' -> 'DrinkBottle').
+    """
     import re
 
     m = re.search(r"vid(\d+)", name)
-    return int(m.group(1)) if m else None
+    if m:
+        return f"vid{int(m.group(1)):02d}"
+    for suf in ("_true_summary.csv", "_summary_true.csv", "_gt.csv", "_summary_log.csv"):
+        if name.endswith(suf):
+            stem = name[: -len(suf)]
+            return stem if stem else None
+    return None
 
 
 def expand_intervals(intervals: List[Tuple[int, int]], max_end: int, stride: int) -> set[int]:
@@ -111,6 +126,10 @@ def score_video_frame(
 
     Returns dict with binary P/R/F1 and per-class P/R/F1, plus 5-tuple
     (frame, human_label, object_label, object_cls) P/R/F1.
+
+    Unmapped prediction tracker IDs are never dropped: binary/per-class count
+    their activity like any pred (overlap with GT activity credits TP, else FP);
+    5-tuple counts them as FP (no identity).
     """
     warnings, errors = validate_id_map(map_df, pred_df)
     for w in warnings:
@@ -119,20 +138,21 @@ def score_video_frame(
         raise ValueError("; ".join(errors))
 
     pdf = apply_id_map(pred_df, map_df)
-    pdf_valid = pdf.dropna(subset=["human_label", "object_label"]).copy()
 
-    gt_df = gt_df.copy()
+    gt_df = normalize_gt_columns(gt_df.copy())
     gt_df["object_cls"] = gt_df["object_cls"].astype(str).str.strip()
     gt_df["human"] = gt_df["human"].astype(str).str.strip()
     gt_df["object"] = gt_df["object"].astype(str).str.strip()
-    pdf_valid["object_class"] = pdf_valid["object_class"].astype(str).str.strip()
+    pdf["object_class"] = pdf["object_class"].astype(str).str.strip()
 
     # ---- Binary frame scoring (any interaction) ----
+    # All preds participate (mapping status irrelevant): overlap with GT activity
+    # credits TP, else FP. Unmapped preds are NOT dropped.
     gt_any: List[Tuple[int, int]] = [
         (int(g["frame_start"]), int(g["frame_end"])) for _, g in gt_df.iterrows()
     ]
     pred_any: List[Tuple[int, int]] = [
-        (int(r["frame_start"]), int(r["frame_end"])) for _, r in pdf_valid.iterrows()
+        (int(r["frame_start"]), int(r["frame_end"])) for _, r in pdf.iterrows()
     ]
 
     max_end = 0
@@ -155,12 +175,13 @@ def score_video_frame(
     P, R, F = _prf(tp, fp, fn)
 
     # ---- Per-class frame metrics (binary: any interaction of class) ----
+    # Activity bucketed by predicted class (mapping status irrelevant).
     per_class: dict[str, dict] = {}
     for cls in CLASS_NAMES:
         gt_cls = gt_df[gt_df["object_cls"] == cls][
             ["frame_start", "frame_end"]
         ].values.tolist()
-        pred_cls = pdf_valid[pdf_valid["object_class"] == cls][
+        pred_cls = pdf[pdf["object_class"] == cls][
             ["frame_start", "frame_end"]
         ].values.tolist()
         gt_active_cls = expand_intervals(gt_cls, max_end, stride)
@@ -180,7 +201,12 @@ def score_video_frame(
 
     # ---- 5-tuple frame scoring (exact human/object/class match per frame) ----
     gt_tuples = expand_5tuples(gt_df, max_end, stride)
-    pred_tuples = expand_pred_5tuples(pdf_valid, max_end, stride)
+    # Unmapped preds get sentinel labels (can never equal a GT label) so every
+    # frame they cover counts as FP, deduped by the tuple set.
+    pdf_tu = pdf.copy()
+    pdf_tu["human_label"] = pdf_tu["human_label"].fillna("__unmapped__")
+    pdf_tu["object_label"] = pdf_tu["object_label"].fillna("__unmapped__")
+    pred_tuples = expand_pred_5tuples(pdf_tu, max_end, stride)
 
     tp_5 = len(gt_tuples & pred_tuples)
     fp_5 = len(pred_tuples - gt_tuples)
@@ -228,29 +254,36 @@ def score_video_frame(
 def discover_pairs(
     gt_dir: Path | str, pred_dir: Path | str
 ) -> List[Tuple[str, Path, Path]]:
-    """Discover matching GT/pred video pairs by video number."""
+    """Discover matching GT/prediction pairs.
+
+    GT accepts '*_true_summary.csv' (vid corpus) and '*_gt.csv' (scenario
+    corpus, e.g. groundtruths/DrinkBottle_gt.csv); predictions use
+    '*_summary_log.csv'. Files pair by key: 'vidNN' for vid-named videos,
+    otherwise the shared name prefix (e.g. 'DrinkBottle').
+    """
     gt_dir = Path(gt_dir)
     pred_dir = Path(pred_dir)
 
-    gt_files: dict[int, Path] = {}
-    for f in gt_dir.glob("*_true_summary.csv"):
-        m = _vidnum(f.name)
-        if m is not None:
-            gt_files[m] = f
+    gt_files: dict[str, Path] = {}
+    for pattern in ("*_true_summary.csv", "*_gt.csv"):
+        for f in gt_dir.glob(pattern):
+            key = _pair_key(f.name)
+            if key is not None:
+                gt_files[key] = f
 
-    pred_files: dict[int, Path] = {}
+    pred_files: dict[str, Path] = {}
     for f in pred_dir.glob("*_summary_log.csv"):
-        m = _vidnum(f.name)
-        if m is not None:
-            pred_files[m] = f
+        key = _pair_key(f.name)
+        if key is not None:
+            pred_files[key] = f
 
     pairs = []
-    for v in sorted(set(gt_files) & set(pred_files)):
-        pairs.append((f"vid{v:02d}", gt_files[v], pred_files[v]))
-    for v in sorted(set(gt_files) - set(pred_files)):
-        print(f"[WARN] vid{v:02d}: GT without prediction ({gt_files[v].name})")
-    for v in sorted(set(pred_files) - set(gt_files)):
-        print(f"[WARN] vid{v:02d}: prediction without GT ({pred_files[v].name})")
+    for k in sorted(set(gt_files) & set(pred_files)):
+        pairs.append((k, gt_files[k], pred_files[k]))
+    for k in sorted(set(gt_files) - set(pred_files)):
+        print(f"[WARN] {k}: GT without prediction ({gt_files[k].name})")
+    for k in sorted(set(pred_files) - set(gt_files)):
+        print(f"[WARN] {k}: prediction without GT ({pred_files[k].name})")
     print(f"[INFO] scoring {len(pairs)} videos")
     return pairs
 
@@ -283,7 +316,7 @@ def run(
             continue
 
         try:
-            gt_df = pd.read_csv(gp)
+            gt_df = read_gt(gp)
             pred_df = pd.read_csv(sp)
             map_df = load_id_map(map_path)
             result = score_video_frame(gt_df, pred_df, map_df, stride)
@@ -293,7 +326,7 @@ def run(
 
         frame_rows.append(
             {
-                "video": f"vid{v:02d}",
+                "video": v,
                 "n_frames": result["n_frames"],
                 "TP": result["TP"],
                 "FP": result["FP"],
@@ -308,7 +341,7 @@ def run(
         for cls, m in result["per_class"].items():
             per_class_rows.append(
                 {
-                    "video": f"vid{v:02d}",
+                    "video": v,
                     "class": cls,
                     "TP": m["TP"],
                     "FP": m["FP"],
@@ -322,7 +355,7 @@ def run(
         # 5-tuple frame rows
         frame_5_rows.append(
             {
-                "video": f"vid{v:02d}",
+                "video": v,
                 "n_frames": result["n_frames"],
                 "TP_5": result["TP_5"],
                 "FP_5": result["FP_5"],
@@ -336,7 +369,7 @@ def run(
         for cls, m in result["per_class_5"].items():
             per_class_5_rows.append(
                 {
-                    "video": f"vid{v:02d}",
+                    "video": v,
                     "class": cls,
                     "TP_5": m["TP"],
                     "FP_5": m["FP"],
@@ -347,10 +380,20 @@ def run(
                 }
             )
 
-    df_frames = pd.DataFrame(frame_rows)
-    df_pc = pd.DataFrame(per_class_rows)
-    df_5 = pd.DataFrame(frame_5_rows)
-    df_pc_5 = pd.DataFrame(per_class_5_rows)
+    df_frames = pd.DataFrame(
+        frame_rows, columns=["video", "n_frames", "TP", "FP", "FN", "TN", "P", "R", "F1"]
+    )
+    df_pc = pd.DataFrame(
+        per_class_rows, columns=["video", "class", "TP", "FP", "FN", "P", "R", "F1"]
+    )
+    df_5 = pd.DataFrame(
+        frame_5_rows,
+        columns=["video", "n_frames", "TP_5", "FP_5", "FN_5", "P_5", "R_5", "F1_5"],
+    )
+    df_pc_5 = pd.DataFrame(
+        per_class_5_rows,
+        columns=["video", "class", "TP_5", "FP_5", "FN_5", "P_5", "R_5", "F1_5"],
+    )
 
     # Summary for binary frame
     tp = int(df_frames["TP"].sum()) if not df_frames.empty else 0
@@ -519,3 +562,21 @@ def run(
     print(f"[INFO] wrote {out_dir / 'primary_frames_5tuple_by_class_summary.csv'}")
     print(f"[INFO] binary   P={P:.4f} R={R:.4f} F1={F:.4f}")
     print(f"[INFO] 5-tuple P_5={P_5:.4f} R_5={R_5:.4f} F1_5={F_5:.4f}")
+
+
+def main(argv: List[str] | None = None) -> None:
+    """CLI entry point for evaluatorB_frame_v2."""
+    parser = argparse.ArgumentParser(
+        description="Frame-level interaction evaluation (binary + 5-tuple matching)."
+    )
+    parser.add_argument("--gt-dir", required=True, help="Directory with *_true_summary.csv (ground truth)")
+    parser.add_argument("--pred-dir", required=True, help="Directory with *_summary_log.csv (predictions)")
+    parser.add_argument("--map-dir", required=True, help="Directory with <video>_map.csv (per-run ID maps)")
+    parser.add_argument("--out-dir", required=True, help="Output directory for result CSVs")
+    parser.add_argument("--stride", type=int, default=DEFAULT_STRIDE, help="Frame stride (default: 5)")
+    args = parser.parse_args(argv)
+    run(args.gt_dir, args.pred_dir, args.map_dir, args.out_dir, args.stride)
+
+
+if __name__ == "__main__":
+    main()

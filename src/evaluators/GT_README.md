@@ -2,7 +2,8 @@
 
 ## File Location
 
-`src/eval/gt_summary/<video>_true_summary.csv`
+- vid corpus: `src/eval/gt_summary/<video>_true_summary.csv`
+- scenario corpus: `src/evaluators/groundtruths/<name>_gt.csv` (e.g. `DrinkBottle_gt.csv`)
 
 ## Columns
 
@@ -14,6 +15,12 @@
 | object        | str/int| Stable object instance label (e.g. `1`, `2` or `phone1`)  |
 | object_cls    | str    | Canonical class name (see below)                          |
 
+Headers are normalized on read (`src/evaluators/gt_io.py`), so hand-typed variants
+like `frame start`, `human label`, `object label` are accepted -- but the canonical
+names above are preferred. One physical human/object must use exactly one label
+string; labels differing only in case (e.g. `centLaptop` vs `CentLaptop`) are treated
+as different objects and will break mapping.
+
 ## Annotation Rules
 
 - **Source**: Annotate from the RAW input video, never the produced output video.
@@ -21,7 +28,7 @@
   descriptive strings (`A`, `B`, `phone1`, `phone2`). Must be consistent within
   a video. These are NOT tracker IDs — they are stable across runs.
 - **`object_cls`**: MUST be one of the canonical model class names:
-  `cell phone`, `laptop`, `wallet`, `bottle`, `bag`, `cup`.
+  `cell phone`, `laptop`, `wallet`, `tumbler`, `bag`.
 - **Intervals**: Raw interaction intervals. No stitching — the evaluator does
   not merge intervals; annotate raw contact intervals.
 - **Negative control**: Empty file (header only) for videos with zero
@@ -52,6 +59,5 @@ Older interaction logs (pre-2026-10-18) may say `"phone"` instead of
 | 0                 | cell phone    |
 | 1                 | laptop        |
 | 2                 | wallet        |
-| 3                 | bottle        |
+| 3                 | tumbler       |
 | 4                 | bag           |
-| 5                 | cup           |

@@ -51,9 +51,11 @@ def validate_id_map(map_df: pd.DataFrame, pred_df: pd.DataFrame) -> Tuple[List[s
 
     Checks:
         - tracker_id mapped to multiple gt_labels of same type -> ERROR
-        - tracker_id used for both human and object -> ERROR
         - prediction tracker IDs not in map -> WARNING (counted as FP)
         - duplicate identical rows -> silently deduped in loader
+
+    Note: human and object tracker IDs are independent namespaces (pose vs
+    detect tracker), so the same integer appearing for both types is normal.
     """
     warnings: List[str] = []
     errors: List[str] = []
@@ -69,13 +71,7 @@ def validate_id_map(map_df: pd.DataFrame, pred_df: pd.DataFrame) -> Tuple[List[s
             f"tracker_id {tid} (type={typ}) maps to {n} gt_labels: {labels}"
         )
 
-    # 2. Same tracker_id used for both human and object = error
-    cross = map_df.groupby("tracker_id")["type"].nunique()
-    cross_bad = cross[cross > 1]
-    for tid in cross_bad.index:
-        errors.append(f"tracker_id {tid} used for both human and object")
-
-    # 3. Unmapped prediction tracker IDs -> warning (counted as FP downstream)
+    # 2. Unmapped prediction tracker IDs -> warning (counted as FP downstream)
     if "human_id" in pred_df.columns:
         pred_human_ids = set(pred_df["human_id"].dropna().unique())
     else:
