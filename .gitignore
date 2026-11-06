@@ -8,3 +8,10 @@
 *.mp4
 .venv
 /runs
+
+datasets
+models
+raws
+runs
+videos
+logs
