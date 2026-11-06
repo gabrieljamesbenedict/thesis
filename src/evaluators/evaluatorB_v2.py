@@ -4,10 +4,11 @@ Per-class temporal IoU (tIoU) matching between ground truth interaction
 intervals and predicted interaction intervals, using per-run ID maps to
 resolve tracker IDs to stable ground-truth labels.
 
-Outputs:
-    primary.csv / primary_noreid.csv     - overall micro/macro (unchanged schema)
-    primary_by_class.csv                 # NEW: per-class interval P/R/F1
-    primary_by_class_noreid.csv          # NEW: per-class interval P/R/F1 (no REID)
+Outputs (under --out-dir):
+    primary.csv                  - per-video overall P/R/F1 per threshold
+    primary_summary.csv          - micro/macro aggregates per threshold
+    primary_by_class.csv         - per-video per-class interval P/R/F1
+    primary_by_class_summary.csv - per-class micro/macro aggregates
 
 Usage:
     python -m evaluators.evaluatorB_v2 \
@@ -21,7 +22,6 @@ Usage:
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -30,8 +30,9 @@ import pandas as pd
 from scipy.optimize import linear_sum_assignment
 
 from evaluators.id_map import apply_id_map, load_id_map, validate_id_map
+from evaluators.gt_io import read_gt
 
-CLASS_NAMES = ["cell phone", "laptop", "wallet", "bottle", "bag", "cup"]
+CLASS_NAMES = ["cell phone", "laptop", "wallet", "tumbler", "bag"]
 
 DEFAULT_THRESHOLDS = (0.3, 0.4, 0.5, 0.6, 0.7)
 
@@ -62,20 +63,22 @@ def _score_split(
 
     # Translate predictions: human_id/object_id -> human_label/object_label
     pdf = apply_id_map(pred_df, map_df)
+    pdf["object_class"] = pdf["object_class"].astype(str).str.strip()
     # Only predictions with both labels mapped are eligible for matching
     pdf_valid = pdf.dropna(subset=["human_label", "object_label"]).copy()
 
-    # Normalize class names
+    # Normalize GT labels
     gt_df = gt_df.copy()
     gt_df["object_cls"] = gt_df["object_cls"].astype(str).str.strip()
     gt_df["human"] = gt_df["human"].astype(str).str.strip()
     gt_df["object"] = gt_df["object"].astype(str).str.strip()
-    pdf_valid["object_class"] = pdf_valid["object_class"].astype(str).str.strip()
     pdf_valid["human_label"] = pdf_valid["human_label"].astype(str).str.strip()
     pdf_valid["object_label"] = pdf_valid["object_label"].astype(str).str.strip()
 
+    # Classes from GT + ALL preds (a class present only in unmapped preds must
+    # still be scored, so its rows count as FP rather than vanishing)
     class_names = sorted(
-        set(gt_df["object_cls"].unique()) | set(pdf_valid["object_class"].unique())
+        set(gt_df["object_cls"].unique()) | set(pdf["object_class"].unique())
     )
 
     results: Dict[str, dict] = {}
@@ -104,6 +107,7 @@ def _score_split(
         n_pred_matchable = len(p_matchable)
 
         per_threshold: Dict[float, dict] = {}
+        best_match_count = 0
 
         if n_gt == 0 and n_pred_matchable == 0:
             # No GT and no matchable preds for this class
@@ -151,7 +155,6 @@ def _score_split(
                         t_cost[i, j] = 1.0 - tiou
 
             # Hungarian assignment at each threshold
-            best_match_count = 0
             for t in thresholds:
                 cost = t_cost.copy()
                 # Invalid pairs (different human/object) get infinite cost
@@ -164,7 +167,8 @@ def _score_split(
                 matched = [
                     (r, c)
                     for r, c in zip(row_ind, col_ind)
-                    if cost[r, c] < 1e9 and (1.0 - cost[r, c]) >= (1.0 - t)
+                    # (1 - cost) is the pair's tIoU; accept pairs with tIoU >= threshold
+                    if cost[r, c] < 1e9 and (1.0 - cost[r, c]) >= t
                 ]
                 tp = len(matched)
                 # FP = all preds (including unmapped) minus matched
@@ -228,48 +232,66 @@ def score_video(
     Returns a dict with per-class and overall metrics per threshold, plus
     legacy ID-agnostic tIoU results.
     """
-    gt_df = pd.read_csv(Path(gt_path))
+    gt_df = read_gt(gt_path)
     pred_df = pd.read_csv(Path(pred_path))
     map_df = load_id_map(Path(map_path))
 
     return _score_split(gt_df, pred_df, map_df, thresholds)
 
 
-def discover_pairs(
-    gt_dir: Path | str, pred_dir: Path | str
-) -> List[Tuple[str, Path, Path]]:
-    """Discover matching GT/pred video pairs by video number."""
-    gt_dir = Path(gt_dir)
-    pred_dir = Path(pred_dir)
+def _pair_key(name: str) -> str | None:
+    """Pairing key from a GT/prediction filename.
 
-    gt_files = {}
-    for f in gt_dir.glob("*_true_summary.csv"):
-        m = _vidnum(f.name)
-        if m is not None:
-            gt_files[m] = f
-
-    pred_files = {}
-    for f in pred_dir.glob("*_summary_log.csv"):
-        m = _vidnum(f.name)
-        if m is not None:
-            pred_files[m] = f
-
-    pairs = []
-    for v in sorted(set(gt_files) & set(pred_files)):
-        pairs.append((f"vid{v:02d}", gt_files[v], pred_files[v]))
-    for v in sorted(set(gt_files) - set(pred_files)):
-        print(f"[WARN] vid{v:02d}: GT without prediction ({gt_files[v].name})")
-    for v in sorted(set(pred_files) - set(gt_files)):
-        print(f"[WARN] vid{v:02d}: prediction without GT ({pred_files[v].name})")
-    print(f"[INFO] scoring {len(pairs)} videos")
-    return pairs
-
-
-def _vidnum(name: str) -> int | None:
+    vidNN_* -> 'vidNN'; otherwise the name with a known suffix stripped
+    (e.g., 'DrinkBottle_gt.csv' -> 'DrinkBottle').
+    """
     import re
 
     m = re.search(r"vid(\d+)", name)
-    return int(m.group(1)) if m else None
+    if m:
+        return f"vid{int(m.group(1)):02d}"
+    for suf in ("_true_summary.csv", "_summary_true.csv", "_gt.csv", "_summary_log.csv"):
+        if name.endswith(suf):
+            stem = name[: -len(suf)]
+            return stem if stem else None
+    return None
+
+
+def discover_pairs(
+    gt_dir: Path | str, pred_dir: Path | str
+) -> List[Tuple[str, Path, Path]]:
+    """Discover matching GT/prediction pairs.
+
+    GT accepts '*_true_summary.csv' (vid corpus) and '*_gt.csv' (scenario
+    corpus, e.g. groundtruths/DrinkBottle_gt.csv); predictions use
+    '*_summary_log.csv'. Files pair by key: 'vidNN' for vid-named videos,
+    otherwise the shared name prefix (e.g. 'DrinkBottle').
+    """
+    gt_dir = Path(gt_dir)
+    pred_dir = Path(pred_dir)
+
+    gt_files: dict[str, Path] = {}
+    for pattern in ("*_true_summary.csv", "*_gt.csv"):
+        for f in gt_dir.glob(pattern):
+            key = _pair_key(f.name)
+            if key is not None:
+                gt_files[key] = f
+
+    pred_files: dict[str, Path] = {}
+    for f in pred_dir.glob("*_summary_log.csv"):
+        key = _pair_key(f.name)
+        if key is not None:
+            pred_files[key] = f
+
+    pairs = []
+    for k in sorted(set(gt_files) & set(pred_files)):
+        pairs.append((k, gt_files[k], pred_files[k]))
+    for k in sorted(set(gt_files) - set(pred_files)):
+        print(f"[WARN] {k}: GT without prediction ({gt_files[k].name})")
+    for k in sorted(set(pred_files) - set(gt_files)):
+        print(f"[WARN] {k}: prediction without GT ({pred_files[k].name})")
+    print(f"[INFO] scoring {len(pairs)} videos")
+    return pairs
 
 
 def run(
@@ -290,8 +312,6 @@ def run(
 
     per_class_rows: List[dict] = []
     overall_rows: List[dict] = []
-    overall_rows_noreid: List[dict] = []
-    per_class_rows_noreid: List[dict] = []
 
     for v, gp, sp in pairs:
         map_path = map_dir / f"{v}_map.csv"
@@ -310,7 +330,7 @@ def run(
             for t, m in r["per_threshold"].items():
                 per_class_rows.append(
                     {
-                        "video": f"vid{v:02d}",
+                        "video": v,
                         "class": cls,
                         "threshold": t,
                         "TP": m["TP"],
@@ -328,20 +348,7 @@ def run(
         for t, m in result["per_threshold"].items():
             overall_rows.append(
                 {
-                    "video": f"vid{v:02d}",
-                    "threshold": t,
-                    "TP": m["TP"],
-                    "FP": m["FP"],
-                    "FN": m["FN"],
-                    "P": m["P"],
-                    "R": m["R"],
-                    "F1": m["F1"],
-                    "level": "video",
-                }
-            )
-            overall_rows_noreid.append(
-                {
-                    "video": f"vid{v:02d}",
+                    "video": v,
                     "threshold": t,
                     "TP": m["TP"],
                     "FP": m["FP"],
@@ -354,9 +361,14 @@ def run(
             )
 
     # Aggregate across all videos
-    df_pc = pd.DataFrame(per_class_rows)
-    df_ov = pd.DataFrame(overall_rows)
-    df_ov_nr = pd.DataFrame(overall_rows_noreid)
+    df_pc = pd.DataFrame(
+        per_class_rows,
+        columns=["video", "class", "threshold", "TP", "FP", "FN", "P", "R", "F1", "n_gt", "n_pred"],
+    )
+    df_ov = pd.DataFrame(
+        overall_rows,
+        columns=["video", "threshold", "TP", "FP", "FN", "P", "R", "F1", "level"],
+    )
 
     # Micro + macro aggregates
     summary_rows: List[dict] = []
@@ -445,7 +457,6 @@ def run(
 
     # Save outputs
     df_ov.to_csv(out_dir / "primary.csv", index=False)
-    df_ov_nr.to_csv(out_dir / "primary_noreid.csv", index=False)
     pd.DataFrame(summary_rows).to_csv(out_dir / "primary_summary.csv", index=False)
     df_pc.to_csv(out_dir / "primary_by_class.csv", index=False)
     pd.DataFrame(pc_summary_rows).to_csv(
@@ -453,7 +464,36 @@ def run(
     )
 
     print(f"[INFO] wrote {out_dir / 'primary.csv'}")
-    print(f"[INFO] wrote {out_dir / 'primary_noreid.csv'}")
     print(f"[INFO] wrote {out_dir / 'primary_summary.csv'}")
     print(f"[INFO] wrote {out_dir / 'primary_by_class.csv'}")
     print(f"[INFO] wrote {out_dir / 'primary_by_class_summary.csv'}")
+
+
+def main(argv: List[str] | None = None) -> None:
+    """CLI entry point for evaluatorB_v2."""
+    parser = argparse.ArgumentParser(
+        description="Label-verified interaction evaluation (interval tIoU)."
+    )
+    parser.add_argument("--gt-dir", required=True, help="Directory with *_true_summary.csv (ground truth)")
+    parser.add_argument("--pred-dir", required=True, help="Directory with *_summary_log.csv (predictions)")
+    parser.add_argument("--map-dir", required=True, help="Directory with <video>_map.csv (per-run ID maps)")
+    parser.add_argument("--out-dir", required=True, help="Output directory for result CSVs")
+    parser.add_argument(
+        "--thresholds",
+        nargs="+",
+        type=float,
+        default=list(DEFAULT_THRESHOLDS),
+        help="tIoU thresholds (default: 0.3 0.4 0.5 0.6 0.7)",
+    )
+    args = parser.parse_args(argv)
+    run(
+        args.gt_dir,
+        args.pred_dir,
+        args.map_dir,
+        args.out_dir,
+        tuple(args.thresholds),
+    )
+
+
+if __name__ == "__main__":
+    main()
